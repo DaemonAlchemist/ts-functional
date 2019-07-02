@@ -84,6 +84,7 @@ export const clone = <T>(obj:T):T => Object.assign({}, obj);
 export const debug = <T>(obj:T):T => {console.log(obj); return obj;}
 export const identity = <T>(obj:T):T => obj;
 export const get = <T>(obj:T):Func<undefined, T> => () => obj;
+export const stringify = <T>(obj:T):string => JSON.stringify(obj);
 
 // Function composition
 export const compose:ICompose = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A):B => reverse(funcs).reduce(
@@ -95,4 +96,16 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
     (acc:any, cur:any) => cur(acc),
     obj
 );
+
+// Other helpers
+export const memoize = <A, B>(f:Func<A, B>, keyGen:Func<A, string> = stringify):Func<A, B> => {
+    const results:Index<B> = {};
+    return (arg:A):B => {
+        const key:string = keyGen(arg);
+        if(typeof results[key] !== 'undefined') {
+            results[key] = f(arg);
+        }
+        return results[key];
+    }
+}
 

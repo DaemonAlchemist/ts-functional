@@ -1,5 +1,6 @@
 type Func<A, B> = (obj:A) => B;
 type Reducer<A, B> = (acc:B, cur:A) => B;
+
 interface Index<T> {
     [key:string]:T;
 }
