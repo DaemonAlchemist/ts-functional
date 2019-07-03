@@ -83,7 +83,7 @@ export const clone = <T>(obj:T):T => Object.assign({}, obj);
 // Helpers
 export const debug = <T>(obj:T):T => {console.log(obj); return obj;}
 export const identity = <T>(obj:T):T => obj;
-export const get = <T>(obj:T):Func<undefined, T> => () => obj;
+export const get = <T>(obj:T):Func<undefined, T> => ():T => obj;
 export const stringify = <T>(obj:T):string => JSON.stringify(obj);
 
 // Function composition
@@ -109,3 +109,16 @@ export const memoize = <A, B>(f:Func<A, B>, keyGen:Func<A, string> = stringify):
     }
 }
 
+export const memoizePromise = <A, B>(f:Func<A, Promise<B>>, keyGen:Func<A, string> = stringify):Func<A, Promise<B>> => {
+    const results:Index<B> = {};
+    return (arg:A):Promise<B> => {
+        const key:string = keyGen(arg);
+        if(typeof results[key] !== 'undefined') {
+            return f(arg).then((result:B):Promise<B> => {
+                results[key] = result;
+                return Promise.resolve(results[key]);
+            });
+        }
+        return Promise.resolve(results[key]);
+    }
+}
