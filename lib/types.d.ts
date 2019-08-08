@@ -22,6 +22,13 @@ interface ISwitch<T> {
     [key:string]: () => T;
     [key:number]:  () => T;
 }
+
+interface IMemoizeOptions<A, B> {
+    keyGen?:Func<A, string>;
+    queueInvalidation?:MemoizeInvalidator<B>
+}
+type MemoizeInvalidator<A> = (invalidate:Func<void, void>, key:string, value:A) => void;
+
 interface ICompose {
     <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f2:Func<T2, B>, f1:Func<A, T2>):Func<A, B>;

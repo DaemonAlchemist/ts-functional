@@ -136,24 +136,30 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
 );
 
 // Other helpers
-export const memoize = <A, B>(f:Func<A, B>, keyGen:Func<A, string> = stringify):Func<A, B> => {
+export const memoize = <A extends any[], B>(f:Variadic<A, B>, options: IMemoizeOptions<A, B>):Variadic<A, B> => {
+    const keyGen = options && options.keyGen ? options.keyGen : stringify;
+    const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
-    return (arg:A):B => {
-        const key:string = keyGen(arg);
+    return (...args:A):B => {
+        const key:string = keyGen(args);
         if(typeof results[key] === 'undefined') {
-            results[key] = f(arg);
+            results[key] = f(...args);
+            queueInvalidation(() => {delete results[key];}, key, results[key]);
         }
         return results[key];
     }
 }
 
-export const memoizePromise = <A extends any[], B>(f:Variadic<A, Promise<B>>, keyGen:Func<A, string> = stringify):Variadic<A, Promise<B>> => {
+export const memoizePromise = <A extends any[], B>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B>):Variadic<A, Promise<B>> => {
+    const keyGen = options && options.keyGen ? options.keyGen : stringify;
+    const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
     return (...args:A):Promise<B> => {
         const key:string = keyGen(args);
         if(typeof results[key] === 'undefined') {
             return f(...args).then((result:B):Promise<B> => {
                 results[key] = result;
+                queueInvalidation(() => {delete results[key];}, key, result);
                 return Promise.resolve(results[key]);
             });
         }
