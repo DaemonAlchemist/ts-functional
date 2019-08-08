@@ -1,4 +1,5 @@
 type Func<A, B> = (obj:A) => B;
+type Variadic<A extends any[], B> = (...args:A) => B;
 type Mapper<A, B> = Func<A, B>;
 type Filter<A> = (obj:A) => boolean;
 type Reducer<A, B> = (acc:B, cur:A) => B;

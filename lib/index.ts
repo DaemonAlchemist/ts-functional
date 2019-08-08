@@ -140,19 +140,19 @@ export const memoize = <A, B>(f:Func<A, B>, keyGen:Func<A, string> = stringify):
     const results:Index<B> = {};
     return (arg:A):B => {
         const key:string = keyGen(arg);
-        if(typeof results[key] !== 'undefined') {
+        if(typeof results[key] === 'undefined') {
             results[key] = f(arg);
         }
         return results[key];
     }
 }
 
-export const memoizePromise = <A, B>(f:Func<A, Promise<B>>, keyGen:Func<A, string> = stringify):Func<A, Promise<B>> => {
+export const memoizePromise = <A extends any[], B>(f:Variadic<A, Promise<B>>, keyGen:Func<A, string> = stringify):Variadic<A, Promise<B>> => {
     const results:Index<B> = {};
-    return (arg:A):Promise<B> => {
-        const key:string = keyGen(arg);
-        if(typeof results[key] !== 'undefined') {
-            return f(arg).then((result:B):Promise<B> => {
+    return (...args:A):Promise<B> => {
+        const key:string = keyGen(args);
+        if(typeof results[key] === 'undefined') {
+            return f(...args).then((result:B):Promise<B> => {
                 results[key] = result;
                 return Promise.resolve(results[key]);
             });
