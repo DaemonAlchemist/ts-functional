@@ -1,3 +1,5 @@
+import typeOf from 'type-of';
+
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
 export const as = <T, U>(obj:T, f:Func<T, U>) => f(obj);
@@ -6,11 +8,20 @@ export const tuple = {
     first: <A, B>(t:Tuple<A, B>):A => t[0],
     second: <A, B>(t:Tuple<A, B>):B => t[1],
 };
+export const makeAsync = <T, U>(f:Func<T, U>):Func<Promise<T>, Promise<U>> => (getT:Promise<T>):Promise<U> => getT.then(f);
+export const syncOrAsync = <T, U>(f:Func<T, U>) =>
+    (obj:SyncOrAsync<T>):SyncOrAsync<U> => {
+        return (typeof (obj as Promise<T>).then !== 'undefined'
+            ? (obj as Promise<T>).then(f)
+            : f(obj as T)
+        ) as any;
+    };
 
 
 // Array functions
 export const at = <T>(index:number):Func<T[], Maybe<T>> => (arr:T[]):Maybe<T> => arr[index];
 export const concat = <T>(item:T | T[]):Func<T[], T[]> => (arr:T[]):T[] => ([] as T[]).concat(arr).concat(item);
+export const concatReduce = <T>(acc:T[], item:T):T[] => concat(item)(acc);
 export const createIndex = <T, U>(getId:Func<T, string>, transform:Func<T, U>):Func<T[], Index<U>> => (arr:T[]):Index<U> => arr.reduce(
     (acc:Index<U>, cur:T):Index<U> => ({
         ...acc,
@@ -80,14 +91,41 @@ export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 // Object methods
 export const clone = <T>(obj:T):T => Object.assign({}, obj);
 
+// String functions
+export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
+export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);
+export const charCodeAt = (index:number):Func<string, number> => (str:string):number => str.charCodeAt(index);
+export const endsWith = (suffix:string):Func<string, boolean> => (str:string):boolean => str.endsWith(suffix);
+export const hash = (str:string):string => JSON.stringify(str);
+export const matches = (regex:RegExp):Func<string, MaybeNull<string[]>> => (str:string):MaybeNull<string[]> => str.match(regex);
+export const prepend = (prefix:string):Func<string, string> => (str:string):string => `${prefix}${str}`;
+export const repeat = (count:number):Func<string, string> => (str:string):string => str.repeat(count);
+export const replace = (search:RegExp):Func<string, Func<string, string>> => (replacement:string):Func<string, string> => (str:string) => str.replace(search, replacement);
+export const search = (term:string):Func<string, number> => (str:string):number => str.search(term);
+export const split = (delim:string):Func<string, string[]> => (str:string):string[] => str.split(delim);
+export const startsWith = (prefix:string):Func<string, boolean> => (str:string):boolean => str.startsWith(prefix);
+export const substr = (start:number, len?:number):Func<string, string> => (str:string):string => str.substr(start, len);
+export const toLowerCase = (str:string):string => str.toLowerCase();
+export const toLocaleLowerCase = (str:string):string => str.toLocaleLowerCase();
+export const toUpperCase = (str:string):string => str.toUpperCase();
+export const toLocaleUpperCase = (str:string):string => str.toLocaleUpperCase();
+export const trim = (str:string):string => str.trim();
+
+// checks
+export const isEmpty = <T>(obj:T):boolean => obj ? false : true;
+export const isNotEmpty = <T>(obj:T):boolean => obj ? true : false;
+
 // Helpers
 export const debug = <T>(obj:T):T => {console.log(obj); return obj;}
 export const identity = <T>(obj:T):T => obj;
 export const get = <T>(obj:T):Func<undefined, T> => ():T => obj;
 export const stringify = <T>(obj:T):string => JSON.stringify(obj);
 
+export const switchOn = <T>(key:string | number, actions:ISwitch<T>):Maybe<T> => (actions[key] || actions.default || (() => undefined))();
+export const typeSwitch = <T>(obj:any, actions:ISwitch<T>):Maybe<T> => switchOn(typeOf(obj), actions);
+
 // Function composition
-export const compose:ICompose = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A):B => reverse(funcs).reduce(
+export const compose:ICompose = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A):B => funcs.reduceRight(
     (acc:any, cur:any) => cur(acc),
     obj
 );

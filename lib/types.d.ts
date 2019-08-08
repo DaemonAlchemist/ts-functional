@@ -1,5 +1,9 @@
 type Func<A, B> = (obj:A) => B;
+type Mapper<A, B> = Func<A, B>;
+type Filter<A> = (obj:A) => boolean;
 type Reducer<A, B> = (acc:B, cur:A) => B;
+type Transducer<A, B, C> = (r:Reducer<B, C>) => Reducer<A, C>;
+type TransducerCreator<A, B, C> = (r:Reducer<A, B>) => Transducer<A, B, C>;
 
 interface Index<T> {
     [key:string]:T;
@@ -8,9 +12,17 @@ interface IHash<T> {
     [key:string]:T[];
 }
 type Maybe<T> = T | undefined;
+type MaybeNull<T> = T | null;
 type Tuple<A, B> = [A, B];
-
+type Just<T> = T;
+type SyncOrAsync<T> = T | Promise<T>;
+interface ISwitch<T> {
+    default: () => T;
+    [key:string]: () => T;
+    [key:number]:  () => T;
+}
 interface ICompose {
+    <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f2:Func<T2, B>, f1:Func<A, T2>):Func<A, B>;
     <A, T2, T3, B>(f3:Func<T3, B>, f2:Func<T2, T3>, f1:Func<A, T2>):Func<A, B>;
     <A, T2, T3, T4, B>(f4:Func<T4, B>, f3:Func<T3, T4>, f2:Func<T2, T3>, f1:Func<A, T2>):Func<A, B>;
@@ -29,6 +41,7 @@ interface ICompose {
 }
 
 interface IPipe {
+    <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f1:Func<A, T2>, f2:Func<T2, B>):Func<A, B>;
     <A, T2, T3, B>(f1:Func<A, T2>, f2:Func<T2, T3>, f3:Func<T3, B>):Func<A, B>;
     <A, T2, T3, T4, B>(f1:Func<A, T2>, f2:Func<T2, T3>, f3:Func<T3, T4>, f4:Func<T4, B>):Func<A, B>;
