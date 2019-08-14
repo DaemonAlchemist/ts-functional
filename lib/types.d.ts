@@ -1,35 +1,35 @@
-type Func<A, B> = (obj:A) => B;
-type Variadic<A extends any[], B> = (...args:A) => B;
-type Mapper<A, B> = Func<A, B>;
-type Filter<A> = (obj:A) => boolean;
-type Reducer<A, B> = (acc:B, cur:A) => B;
-type Transducer<A, B, C> = (r:Reducer<B, C>) => Reducer<A, C>;
-type TransducerCreator<A, B, C> = (r:Reducer<A, B>) => Transducer<A, B, C>;
+export declare type Func<A, B> = (obj:A) => B;
+export declare type Variadic<A extends any[], B> = (...args:A) => B;
+export declare type Mapper<A, B> = Func<A, B>;
+export declare type Filter<A> = (obj:A) => boolean;
+export declare type Reducer<A, B> = (acc:B, cur:A) => B;
+export declare type Transducer<A, B, C> = (r:Reducer<B, C>) => Reducer<A, C>;
+export declare type TransducerCreator<A, B, C> = (r:Reducer<A, B>) => Transducer<A, B, C>;
 
-interface Index<T> {
+export declare interface Index<T> {
     [key:string]:T;
 }
-interface IHash<T> {
+export declare interface IHash<T> {
     [key:string]:T[];
 }
-type Maybe<T> = T | undefined;
-type MaybeNull<T> = T | null;
-type Tuple<A, B> = [A, B];
-type Just<T> = T;
-type SyncOrAsync<T> = T | Promise<T>;
-interface ISwitch<T> {
+export declare type Maybe<T> = T | undefined;
+export declare type MaybeNull<T> = T | null;
+export declare type Tuple<A, B> = [A, B];
+export declare type Just<T> = T;
+export declare type SyncOrAsync<T> = T | Promise<T>;
+export declare interface ISwitch<T> {
     default: () => T;
     [key:string]: () => T;
     [key:number]:  () => T;
 }
 
-interface IMemoizeOptions<A, B> {
+export declare interface IMemoizeOptions<A, B> {
     keyGen?:Func<A, string>;
     queueInvalidation?:MemoizeInvalidator<B>
 }
-type MemoizeInvalidator<A> = (invalidate:Func<void, void>, key:string, value:A) => void;
+export declare type MemoizeInvalidator<A> = (invalidate:Func<void, void>, key:string, value:A) => void;
 
-interface ICompose {
+export declare interface ICompose {
     <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f2:Func<T2, B>, f1:Func<A, T2>):Func<A, B>;
     <A, T2, T3, B>(f3:Func<T3, B>, f2:Func<T2, T3>, f1:Func<A, T2>):Func<A, B>;
@@ -48,7 +48,7 @@ interface ICompose {
     <A, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, B>(f16:Func<T16, B>, f15:Func<T15, T16>, f14:Func<T14, T15>, f13:Func<T13, T14>, f12:Func<T12, T13>, f11:Func<T11, T12>, f10:Func<T10, T11>, f9:Func<T9, T10>, f8:Func<T8, T9>, f7:Func<T7, T8>, f6:Func<T6, T7>, f5:Func<T5, T6>, f4:Func<T4, T5>, f3:Func<T3, T4>, f2:Func<T2, T3>, f1:Func<A, T2>):Func<A, B>;
 }
 
-interface IPipe {
+export declare interface IPipe {
     <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f1:Func<A, T2>, f2:Func<T2, B>):Func<A, B>;
     <A, T2, T3, B>(f1:Func<A, T2>, f2:Func<T2, T3>, f3:Func<T3, B>):Func<A, B>;
