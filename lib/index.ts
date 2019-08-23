@@ -21,6 +21,18 @@ export const syncOrAsync = <T, U>(f:Func<T, U>) =>
 
 // Array functions
 export const at = <T>(index:number):Func<T[], Maybe<T>> => (arr:T[]):Maybe<T> => arr[index];
+export const chunk = <T>(size:number) => (arr:T[]):T[][] => {
+    if(size <= 0) {
+        console.error("Chunk expects a size greater than zero");
+        return [arr];
+    }
+
+    let temp:T[][] = [];
+    for(let i=0,j=arr.length; i<j; i+=size) {
+        temp.push(arr.slice(i, i+size));
+    }
+    return temp;
+}
 export const concat = <T>(item:T | T[]):Func<T[], T[]> => (arr:T[]):T[] => ([] as T[]).concat(arr).concat(item);
 export const concatReduce = <T>(acc:T[], item:T):T[] => concat(item)(acc);
 export const createIndex = <T, U>(getId:Func<T, string>, transform:Func<T, U>):Func<T[], Index<U>> => (arr:T[]):Index<U> => arr.reduce(

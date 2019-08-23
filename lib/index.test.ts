@@ -1,7 +1,44 @@
-import {memoizePromise} from './index';
-import { checkServerIdentity } from 'tls';
+import {chunk, memoizePromise} from './index';
+
+// Override console log for testing
+let log:string[] = [];
+let error:string[] = [];
+console.clear = () => {
+    log = [];
+}
+console.log = jest.fn((msg:string) => {log.push(msg)});
+console.error = jest.fn((msg:string) => {error.push(msg)});
 
 describe("ts-functional", () => {
+    describe("chunk", () => {
+        it("should split an array", () => {
+            const orig = [1, 2, 3, 4, 5, 6, 7, 8];
+            const chunked = chunk(2)(orig);
+            expect(chunked).toEqual([[1, 2], [3, 4], [5, 6], [7, 8]]);
+        });
+        it("should split an array with a partial for the last result", () => {
+            const orig = [1, 2, 3, 4, 5, 6, 7];
+            const chunked = chunk(4)(orig);
+            expect(chunked).toEqual([[1, 2, 3, 4], [5, 6, 7]]);
+        });
+        it("should throw an error and return the original array with a chunk size of zero", () => {
+            const orig = [1, 2, 3, 4, 5, 6, 7];
+            console.clear();
+            const chunked = chunk(0)(orig);
+            expect(chunked).toEqual([[1, 2, 3, 4, 5, 6, 7]]);
+            expect(console.error).toHaveBeenCalledTimes(1);
+            expect(error).toEqual(["Chunk expects a size greater than zero"]);
+        });
+        it("should return an empty array if the original array is empty", () => {
+            const chunked = chunk(2)([]);
+            expect(chunked).toEqual([]);
+        });
+        it("should return one chunk if the chunk size is greater than the length of the input array", () => {
+            const orig = [1, 2, 3, 4, 5, 6, 7];
+            const chunked = chunk(10)(orig);
+            expect(chunked).toEqual([[1, 2, 3, 4, 5, 6, 7]]);
+        });
+    });
     describe("memoizePromise", () => {
         it("should not run the enclosed function for cached values", () => {
             const check = jest.fn();
