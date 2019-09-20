@@ -1,4 +1,4 @@
-import {chunk, memoizePromise} from './index';
+import {chunk, memoizePromise, sort} from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -39,6 +39,14 @@ describe("ts-functional", () => {
             expect(chunked).toEqual([[1, 2, 3, 4, 5, 6, 7]]);
         });
     });
+    describe("sort", () => {
+        it("should work", () => {
+            const orig = ["c", "d", "b", "a"];
+            const final = ["a", "b", "c", "d"];
+            const sorter = sort((a:string, b:string) => a.localeCompare(b));
+            expect(sorter(orig)).toEqual(final);
+        });
+    })
     describe("memoizePromise", () => {
         it("should not run the enclosed function for cached values", () => {
             const check = jest.fn();

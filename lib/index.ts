@@ -98,7 +98,7 @@ export const splice = <T>(start:number, length?:number) => (arr:T[]):T[] => {
     return newArr;
 };
 export const some = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boolean => arr.some(f);
-export const sort = <T>(f:Func<T, number>):Func<T[], T[]> => (arr:T[]):T[] => concat([] as T[])(arr).sort(f);
+export const sort = <T>(f:(a:T, b:T) => number):Func<T[], T[]> => (arr:T[]):T[] => concat([] as T[])(arr).sort(f);
 export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 
 // Object methods
