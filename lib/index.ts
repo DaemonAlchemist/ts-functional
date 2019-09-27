@@ -103,6 +103,7 @@ export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 
 // Object methods
 export const clone = <T>(obj:T):T => Object.assign({}, obj);
+export const or = <T>(def:T) => (obj:T | null | undefined) => obj ? obj : def;
 
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
