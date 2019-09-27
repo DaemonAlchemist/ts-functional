@@ -1,4 +1,4 @@
-import {chunk, memoizePromise, or, sort} from './index';
+import {chunk, juxt, memoizePromise, or, sort} from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -37,6 +37,17 @@ describe("ts-functional", () => {
             const orig = [1, 2, 3, 4, 5, 6, 7];
             const chunked = chunk(10)(orig);
             expect(chunked).toEqual([[1, 2, 3, 4, 5, 6, 7]]);
+        });
+    });
+    describe("juxt", () => {
+        it("should return a tuple of functions applied to an object", () => {
+            const str = "abc123";
+            const results = juxt(
+                (s:string):number => s.length,
+                (s:string):string => s.substr(0, 3),
+            )(str);
+            expect(results[0]).toEqual(6);
+            expect(results[1]).toEqual("abc");
         });
     });
     describe("memoizePromise", () => {

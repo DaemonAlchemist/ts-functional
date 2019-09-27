@@ -1,5 +1,5 @@
 import typeOf from 'type-of';
-import { Func, ICompose, IHash, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic } from './types';
+import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic } from './types';
 
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
@@ -53,7 +53,7 @@ export const from = concat([]);
 export const includes = <T>(item:T):Func<T[], boolean> => (arr:T[]):boolean => arr.includes(item);
 export const indexOf = <T>(item:T, start?:number):Func<T[], number> => (arr:T[]):number => arr.indexOf(item, start);
 export const joinWith = <T>(sep:string):Func<T[], string> => (arr:T[]):string => arr.join(sep);
-// TODO: juxt
+export const juxt:IJuxt = (...funcs:any) => (obj:any) => funcs.map((f:any) => f(obj));
 export const keys = <T>(arr:T[]):IterableIterator<number> => arr.keys();
 export const last = <T>(arr:T[]):Maybe<T> => at<T>(arr.length - 1)(arr);
 export const lastIndexOf = <T>(item:T):Func<T[], number> => (arr:T[]):number => arr.lastIndexOf(item);

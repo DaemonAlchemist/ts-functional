@@ -29,6 +29,24 @@ export declare interface IMemoizeOptions<A, B> {
 }
 export declare type MemoizeInvalidator<A> = (invalidate:Func<void, void>, key:string, value:A) => void;
 
+export declare interface IJuxt {
+    <T, A, B>(f1:Func<T, A>, f2:Func<T, B>):Func<T, [A, B]>;
+    <T, A, B, C>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>):Func<T, [A, B, C]>;
+    <T, A, B, C, D>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>):Func<T, [A, B, C, D]>;
+    <T, A, B, C, D, E>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>):Func<T, [A, B, C, D, E]>;
+    <T, A, B, C, D, E, F>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>):Func<T, [A, B, C, D, E, F]>;
+    <T, A, B, C, D, E, F, G>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>):Func<T, [A, B, C, D, E, F, G]>;
+    <T, A, B, C, D, E, F, G, H>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>):Func<T, [A, B, C, D, E, F, G, H]>;
+    <T, A, B, C, D, E, F, G, H, I>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>):Func<T, [A, B, C, D, E, F, G, H, I]>;
+    <T, A, B, C, D, E, F, G, H, I, J>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>):Func<T, [A, B, C, D, E, F, G, H, I, J]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>):Func<T, [A, B, C, D, E, F, G, H, I, J, K]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K, L>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>, f12:Func<T, L>):Func<T, [A, B, C, D, E, F, G, H, I, J, K, L]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>, f12:Func<T, L>, f13:Func<T, M>):Func<T, [A, B, C, D, E, F, G, H, I, J, K, L, M]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>, f12:Func<T, L>, f13:Func<T, M>, f14:Func<T, N>):Func<T, [A, B, C, D, E, F, G, H, I, J, K, L, M, N]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>, f12:Func<T, L>, f13:Func<T, M>, f14:Func<T, N>, f15:Func<T, O>):Func<T, [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]>;
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(f1:Func<T, A>, f2:Func<T, B>, f3:Func<T, C>, f4:Func<T, D>, f5:Func<T, E>, f6:Func<T, F>, f7:Func<T, G>, f8:Func<T, H>, f9:Func<T, I>, f10:Func<T, J>, f11:Func<T, K>, f12:Func<T, L>, f13:Func<T, M>, f14:Func<T, N>, f15:Func<T, O>, f16:Func<T, P>):Func<T, [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]>;
+}
+
 export declare interface ICompose {
     <A, B>(f1:Func<A, B>):Func<A, B>;
     <A, T2, B>(f2:Func<T2, B>, f1:Func<A, T2>):Func<A, B>;
