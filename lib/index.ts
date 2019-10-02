@@ -116,7 +116,7 @@ export const prepend = (prefix:string):Func<string, string> => (str:string):stri
 export const repeat = (count:number):Func<string, string> => (str:string):string => str.repeat(count);
 export const replace = (search:RegExp):Func<string, Func<string, string>> => (replacement:string):Func<string, string> => (str:string) => str.replace(search, replacement);
 export const search = (term:string):Func<string, number> => (str:string):number => str.search(term);
-export const split = (delim:string):Func<string, string[]> => (str:string):string[] => str.split(delim);
+export const split = (delim:string | RegExp):Func<string, string[]> => (str:string):string[] => str.split(delim);
 export const startsWith = (prefix:string):Func<string, boolean> => (str:string):boolean => str.startsWith(prefix);
 export const substr = (start:number, len?:number):Func<string, string> => (str:string):string => str.substr(start, len);
 export const toLowerCase = (str:string):string => str.toLowerCase();
