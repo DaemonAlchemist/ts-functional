@@ -105,6 +105,14 @@ export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 export const clone = <T>(obj:T):T => Object.assign({}, obj);
 export const or = <T>(def:T) => (obj:T | null | undefined) => obj ? obj : def;
 
+export const pick = <T, K extends keyof T>(...fields:K[]) => (obj:T):Pick<T, K> => {
+    const ret = {} as any;
+    fields.forEach((key => {
+        ret[key] = obj[key];
+    }));
+    return ret;
+};
+
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);

@@ -1,4 +1,4 @@
-import {chunk, juxt, memoizePromise, or, sort} from './index';
+import {chunk, juxt, memoizePromise, or, pick, sort} from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -124,6 +124,17 @@ describe("ts-functional", () => {
             expect(or("default")(undefined)).toEqual("default");
             expect(or("default")("orig")).toEqual("orig");
         });
+    });
+    describe("pick", () => {
+        it("should extract fields", () => {
+            interface IPickTest {a:number; b:number; c:string;}
+            const obj:IPickTest = {a: 1, b: 2, c: "test"};
+            const picked = pick<IPickTest, "a" | "c">("a", "c")(obj);
+            const a = picked.a;
+            const c = picked.c;
+            expect(a).toEqual(1);
+            expect(c).toEqual("test");
+        })
     });
     describe("sort", () => {
         it("should work", () => {
