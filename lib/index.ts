@@ -77,7 +77,7 @@ export const push = <T>(item:T):Func<T[], T[]> => (arr:T[]):T[] => {
     return a;
 }
 export const range = (start:number, end:number):number[] =>
-    Array(Math.abs(end - start) + 1)
+    [...Array(Math.abs(end - start) + 1).keys()]
     .map((_:number, i:number) => start < end ? i + start : start - i);
 
 export const reverse = <T>(arr:T[]):T[] => ([] as T[]).concat(arr).reverse();

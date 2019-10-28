@@ -1,4 +1,4 @@
-import {chunk, juxt, memoizePromise, or, pick, sort} from './index';
+import { chunk, juxt, memoizePromise, or, pick, range, sort } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -134,6 +134,14 @@ describe("ts-functional", () => {
             const c = picked.c;
             expect(a).toEqual(1);
             expect(c).toEqual("test");
+        })
+    });
+    describe("range", () => {
+        it("should work", () => {
+            expect(range(1, 5)).toEqual([1, 2, 3, 4, 5]);
+        });
+        it("should work for negative ranges", () => {
+            expect(range(5, 1)).toEqual([5, 4, 3, 2, 1]);
         })
     });
     describe("sort", () => {
