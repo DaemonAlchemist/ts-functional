@@ -1,6 +1,6 @@
 {
   "name": "ts-functional",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A template for creating TypeScript npm modules",
   "main": "dist/index.js",
   "scripts": {
