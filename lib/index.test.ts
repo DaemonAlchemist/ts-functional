@@ -71,6 +71,26 @@ describe("ts-functional", () => {
                 expect(result).toEqual(2);
             });
         });
+        it("should not run the enclosed function if it is already being run", () => {
+            const check = jest.fn();
+            const p = (arg:number):Promise<number> => {
+                check();
+                return new Promise((resolve:any, reject:any) => {
+                    setTimeout(() => {
+                        resolve(arg+1);
+                    }, 10);
+                });
+            }
+            const fn = memoizePromise(p);
+            return Promise.all([fn(1), fn(1), fn(2), fn(1)])
+                .then((results:number[]) => {
+                expect(check).toHaveBeenCalledTimes(2);
+                expect(results[0]).toEqual(2);
+                expect(results[1]).toEqual(2);
+                expect(results[2]).toEqual(3);
+                expect(results[3]).toEqual(2);
+            });
+        });
         it("should work for functions with multiple arguments", () => {
             const check = jest.fn();
             const p = (a:number, b:number):Promise<number> => {

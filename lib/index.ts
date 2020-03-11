@@ -176,14 +176,26 @@ export const memoizePromise = <A extends any[], B>(f:Variadic<A, Promise<B>>, op
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
+    const isRunning:Index<boolean> = {};
+    const resolvers:Index<((value:B) => void)[]> = {};
     return (...args:A):Promise<B> => {
         const key:string = keyGen(args);
         if(typeof results[key] === 'undefined') {
-            return f(...args).then((result:B):Promise<B> => {
-                results[key] = result;
-                queueInvalidation(() => {delete results[key];}, key, result);
-                return Promise.resolve(results[key]);
+            const p = new Promise<B>((resolve:(value:B) => void, reject:any) => {
+                if(!Array.isArray(resolvers[key])) { resolvers[key] = [];}
+                resolvers[key].push(resolve);
             });
+            if(!isRunning[key]) {
+                isRunning[key] = true;
+                f(...args).then((result:B) => {
+                    isRunning[key] = false;
+                    results[key] = result;
+                    queueInvalidation(() => {delete results[key];}, key, result);
+                    resolvers[key].forEach((r:(value:B) => void) => {r(result);});
+                    resolvers[key] = [];
+                });
+            }
+            return p;
         }
         return Promise.resolve(results[key]);
     }
