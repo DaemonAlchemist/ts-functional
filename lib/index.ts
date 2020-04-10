@@ -1,6 +1,5 @@
 import typeOf from 'type-of';
 import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic } from './types';
-import { Omit } from 'yargs';
 
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
