@@ -151,7 +151,7 @@ describe("ts-functional", () => {
             const obj:IPickTest = {a: 1, b: 2, c: "test"};
             const picked = pick<IPickTest, "a" | "c">("a", "c")(obj);
             expect(picked.a).toEqual(1);
-            expect(picked.b).toBeUndefined();
+            expect((picked as any).b).toBeUndefined();
             expect(picked.c).toEqual("test");
         })
     });
@@ -160,9 +160,9 @@ describe("ts-functional", () => {
             interface IPickTest {a:number; b:number; c:string;}
             const obj:IPickTest = {a: 1, b: 2, c: "test"};
             const picked = omit<IPickTest, "a" | "c">("a", "c")(obj);
-            expect(picked.a).toBeUndefined();
+            expect((picked as any).a).toBeUndefined();
             expect(picked.b).toEqual(2);
-            expect(picked.c).toBeUndefined()
+            expect((picked as any).c).toBeUndefined()
         })
     });
     describe("range", () => {
