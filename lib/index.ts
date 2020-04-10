@@ -1,5 +1,6 @@
 import typeOf from 'type-of';
 import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic } from './types';
+import { Omit } from 'yargs';
 
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
@@ -112,6 +113,14 @@ export const pick = <T, K extends keyof T>(...fields:K[]) => (obj:T):Pick<T, K> 
     }));
     return ret;
 };
+
+export const omit = <T, K extends keyof T>(...fields:K[]) => (obj:T):Omit<T, K> => {
+    let ret = {...(obj as any)};
+    fields.forEach((key => {
+        delete ret[key];
+    }));
+    return ret;
+}
 
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;

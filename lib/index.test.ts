@@ -1,4 +1,4 @@
-import { chunk, juxt, memoizePromise, or, pick, range, sort } from './index';
+import { chunk, juxt, memoizePromise, or, pick, range, sort, omit } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -150,10 +150,19 @@ describe("ts-functional", () => {
             interface IPickTest {a:number; b:number; c:string;}
             const obj:IPickTest = {a: 1, b: 2, c: "test"};
             const picked = pick<IPickTest, "a" | "c">("a", "c")(obj);
-            const a = picked.a;
-            const c = picked.c;
-            expect(a).toEqual(1);
-            expect(c).toEqual("test");
+            expect(picked.a).toEqual(1);
+            expect(picked.b).toBeUndefined();
+            expect(picked.c).toEqual("test");
+        })
+    });
+    describe("omit", () => {
+        it("should exclude fields", () => {
+            interface IPickTest {a:number; b:number; c:string;}
+            const obj:IPickTest = {a: 1, b: 2, c: "test"};
+            const picked = omit<IPickTest, "a" | "c">("a", "c")(obj);
+            expect(picked.a).toBeUndefined();
+            expect(picked.b).toEqual(2);
+            expect(picked.c).toBeUndefined()
         })
     });
     describe("range", () => {
