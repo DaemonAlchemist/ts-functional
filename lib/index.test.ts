@@ -71,6 +71,26 @@ describe("ts-functional", () => {
                 expect(result).toEqual(2);
             });
         });
+        it("should catch and cache rejections", () => {
+            const check = jest.fn();
+            const p = (arg:number):Promise<number> => {
+                check();
+                return Promise.reject(`${arg}: Error!`);
+            }
+            const fn = memoizePromise(p);
+            return fn(1).catch((err:string) => {
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(err).toEqual("1: Error!");
+                return fn(1);
+            }).catch((err:string) => {
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(err).toEqual("1: Error!");
+                return fn(2);
+            }).catch((err:string) => {
+                expect(check).toHaveBeenCalledTimes(2);
+                expect(err).toEqual("2: Error!");
+            });
+        });
         it("should not run the enclosed function if it is already being run", () => {
             const check = jest.fn();
             const p = (arg:number):Promise<number> => {
@@ -84,12 +104,12 @@ describe("ts-functional", () => {
             const fn = memoizePromise(p);
             return Promise.all([fn(1), fn(1), fn(2), fn(1)])
                 .then((results:number[]) => {
-                expect(check).toHaveBeenCalledTimes(2);
-                expect(results[0]).toEqual(2);
-                expect(results[1]).toEqual(2);
-                expect(results[2]).toEqual(3);
-                expect(results[3]).toEqual(2);
-            });
+                    expect(check).toHaveBeenCalledTimes(2);
+                    expect(results[0]).toEqual(2);
+                    expect(results[1]).toEqual(2);
+                    expect(results[2]).toEqual(3);
+                    expect(results[3]).toEqual(2);
+                });
         });
         it("should work for functions with multiple arguments", () => {
             const check = jest.fn();

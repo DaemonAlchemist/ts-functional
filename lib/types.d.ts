@@ -23,11 +23,11 @@ export declare interface ISwitch<T> {
     [key:number]:  () => T;
 }
 
-export declare interface IMemoizeOptions<A, B> {
+export declare interface IMemoizeOptions<A, B, C> {
     keyGen?:Func<A, string>;
-    queueInvalidation?:MemoizeInvalidator<B>
+    queueInvalidation?:MemoizeInvalidator<B, C>
 }
-export declare type MemoizeInvalidator<A> = (invalidate:Func<void, void>, key:string, value:A) => void;
+export declare type MemoizeInvalidator<A, B> = (invalidate:Func<void, void>, key:string, result?:A, err?:B) => void;
 
 export declare interface IJuxt {
     <T, A, B>(f1:Func<T, A>, f2:Func<T, B>):Func<T, [A, B]>;

@@ -166,7 +166,7 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
 );
 
 // Other helpers
-export const memoize = <A extends any[], B>(f:Variadic<A, B>, options: IMemoizeOptions<A, B>):Variadic<A, B> => {
+export const memoize = <A extends any[], B, C>(f:Variadic<A, B>, options: IMemoizeOptions<A, B, C>):Variadic<A, B> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
@@ -180,31 +180,51 @@ export const memoize = <A extends any[], B>(f:Variadic<A, B>, options: IMemoizeO
     }
 }
 
-export const memoizePromise = <A extends any[], B>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B>):Variadic<A, Promise<B>> => {
+export const memoizePromise = <A extends any[], B, C>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B, C>):Variadic<A, Promise<B>> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
+    const errors:Index<C> = {};
+    const isSuccess:Index<boolean> = {};
     const isRunning:Index<boolean> = {};
     const resolvers:Index<((value:B) => void)[]> = {};
+    const rejecters:Index<((value:C) => void)[]> = {};
     return (...args:A):Promise<B> => {
         const key:string = keyGen(args);
-        if(typeof results[key] === 'undefined') {
-            const p = new Promise<B>((resolve:(value:B) => void, reject:any) => {
+        if(typeof results[key] === 'undefined' && typeof errors[key] === 'undefined') {
+            const p = new Promise<B>((resolve:(result:B) => void, reject:(err:C) => void) => {
                 if(!Array.isArray(resolvers[key])) { resolvers[key] = [];}
+                if(!Array.isArray(rejecters[key])) { rejecters[key] = [];}
                 resolvers[key].push(resolve);
+                rejecters[key].push(reject);
             });
             if(!isRunning[key]) {
                 isRunning[key] = true;
+                const invalidate = () => {
+                    delete results[key];
+                    delete errors[key];
+                    delete isSuccess[key];
+                };
                 f(...args).then((result:B) => {
                     isRunning[key] = false;
                     results[key] = result;
-                    queueInvalidation(() => {delete results[key];}, key, result);
+                    isSuccess[key] = true;
+                    queueInvalidation(invalidate, key, result, undefined);
                     resolvers[key].forEach((r:(value:B) => void) => {r(result);});
                     resolvers[key] = [];
+                    rejecters[key] = [];
+                }).catch((err:C) => {
+                    isRunning[key] = false;
+                    errors[key] = err;
+                    isSuccess[key] = false;
+                    queueInvalidation(invalidate, key, undefined, err);
+                    rejecters[key].forEach((r:(value:C) => void) => {r(err);});
+                    resolvers[key] = [];
+                    rejecters[key] = [];
                 });
             }
             return p;
         }
-        return Promise.resolve(results[key]);
+        return isSuccess[key] ? Promise.resolve(results[key]) : Promise.reject(errors[key]);
     }
 }
