@@ -1,4 +1,4 @@
-import { chunk, juxt, memoizePromise, or, pick, range, sort, omit } from './index';
+import { chunk, juxt, memoizePromise, or, pick, range, sort, omit, matchOn } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -48,6 +48,22 @@ describe("ts-functional", () => {
             )(str);
             expect(results[0]).toEqual(6);
             expect(results[1]).toEqual("abc");
+        });
+    });
+    describe("matchOn", () => {
+        it("should return objects based on RegEx matches on the source string", () => {
+            const convert = matchOn([
+                [/^123$/, () => "Matched 123"],
+                [/^[0-9]*[a-z]*$/, () => "Matched numbers followed by strings"],
+            ], "NO MATCH");
+            const tests:{[id:string]:string} = {
+                "123": "Matched 123",
+                "123abc": "Matched numbers followed by strings",
+                "No Match": "NO MATCH",
+            }
+            Object.keys(tests).forEach((key:string) => {
+                expect(convert(key)).toEqual(tests[key]);
+            });
         });
     });
     describe("memoizePromise", () => {
@@ -158,6 +174,16 @@ describe("ts-functional", () => {
             });
         });
     });
+    describe("omit", () => {
+        it("should exclude fields", () => {
+            interface IPickTest {a:number; b:number; c:string;}
+            const obj:IPickTest = {a: 1, b: 2, c: "test"};
+            const picked = omit<IPickTest, "a" | "c">("a", "c")(obj);
+            expect((picked as any).a).toBeUndefined();
+            expect(picked.b).toEqual(2);
+            expect((picked as any).c).toBeUndefined()
+        })
+    });
     describe("or", () =>{
         it("should provide defaults for non-truthy objects", () => {
             expect(or("default")(null)).toEqual("default");
@@ -173,16 +199,6 @@ describe("ts-functional", () => {
             expect(picked.a).toEqual(1);
             expect((picked as any).b).toBeUndefined();
             expect(picked.c).toEqual("test");
-        })
-    });
-    describe("omit", () => {
-        it("should exclude fields", () => {
-            interface IPickTest {a:number; b:number; c:string;}
-            const obj:IPickTest = {a: 1, b: 2, c: "test"};
-            const picked = omit<IPickTest, "a" | "c">("a", "c")(obj);
-            expect((picked as any).a).toBeUndefined();
-            expect(picked.b).toEqual(2);
-            expect((picked as any).c).toBeUndefined()
         })
     });
     describe("range", () => {

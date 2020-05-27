@@ -1,5 +1,5 @@
 import typeOf from 'type-of';
-import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic } from './types';
+import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic, MatchFunc } from './types';
 
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
@@ -153,6 +153,18 @@ export const stringify = <T>(obj:T):string => JSON.stringify(obj);
 
 export const switchOn = <T>(key:string | number, actions:ISwitch<T>):Maybe<T> => (actions[key] || actions.default || (() => undefined))();
 export const typeSwitch = <T>(obj:any, actions:ISwitch<T>):Maybe<T> => switchOn(typeOf(obj), actions);
+
+export const matchOn = <T>(
+    actions:MatchFunc<T>[],
+    defaultValue:T,
+    disambiguator?:(matches:MatchFunc<T>[]) => MatchFunc<T>
+):((str:string) => T) => (str:string):T => {
+    const multiMatchFixer = disambiguator || ((matches:MatchFunc<T>[]):MatchFunc<T> => matches[0]);
+    const matches = actions.filter((action) => tuple.first(action).test("" + str));
+    return matches.length === 1 ? tuple.second(matches[0])() :
+           matches.length > 1   ? tuple.second(multiMatchFixer(matches))() :
+           defaultValue;
+}
 
 // Function composition
 export const compose:ICompose = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A):B => funcs.reduceRight(

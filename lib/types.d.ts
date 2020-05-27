@@ -23,6 +23,8 @@ export declare interface ISwitch<T> {
     [key:number]:  () => T;
 }
 
+export declare type MatchFunc<T> = Tuple<RegExp, () => T>;
+
 export declare interface IMemoizeOptions<A, B, C> {
     keyGen?:Func<A, string>;
     queueInvalidation?:MemoizeInvalidator<B, C>
