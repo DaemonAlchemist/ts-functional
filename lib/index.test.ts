@@ -1,4 +1,4 @@
-import { chunk, juxt, memoizePromise, or, pick, range, sort, omit, matchOn } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -217,4 +217,20 @@ describe("ts-functional", () => {
             expect(sorter(orig)).toEqual(final);
         });
     });
+    describe("arg", () => {
+        it('should return the specified argument', () => {
+            expect(arg<number>(0)(0, 1, 2, 3)).toEqual(0);
+            expect(arg<number>(1)(0, 1, 2, 3)).toEqual(1);
+            expect(arg<number>(2)(0, 1, 2, 3)).toEqual(2);
+            expect(arg<number>(3)(0, 1, 2, 3)).toEqual(3);
+            expect(arg<number>(4)(0, 1, 2, 3)).toEqual(undefined);
+            expect(arg<number>(-1)(0, 1, 2, 3)).toEqual(undefined);
+        })
+    });
+    describe("args", () => {
+        it("should return the specified arguments", () => {
+            expect(args<[number, string]>(0, 1)(0, "one", "two", 3)).toEqual([0, "one"]);
+            expect(args<[number, string]>(0, 2)(0, "one", "two", 3)).toEqual([0, "two"]);
+        })
+    })
 });

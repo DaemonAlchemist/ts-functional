@@ -150,6 +150,8 @@ export const debug = <T>(obj:T):T => {console.log(obj); return obj;}
 export const identity = <T>(obj:T):T => obj;
 export const get = <T>(obj:T):Func<undefined, T> => ():T => obj;
 export const stringify = <T>(obj:T):string => JSON.stringify(obj);
+export const arg = <T>(index:number):((...args:any[]) => T) => (...args:any[]) => args[index] as T;
+export const args = <T>(...indices:number[]):((...args:any[]) => T) => (...args:any[]):T => indices.map(i => args[i]) as unknown as T;
 
 export const switchOn = <T>(key:string | number, actions:ISwitch<T>):Maybe<T> => (actions[key] || actions.default || (() => undefined))();
 export const typeSwitch = <T>(obj:any, actions:ISwitch<T>):Maybe<T> => switchOn(typeOf(obj), actions);
