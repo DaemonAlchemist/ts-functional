@@ -47,7 +47,7 @@ export const every = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boo
 export const filter = <T>(f:Func<T, boolean>):Func<T[], T[]> => (arr:T[]):T[] => arr.filter(f);
 export const find = <T>(f:Func<T, boolean>):Func<T[], Maybe<T>> => (arr:T[]):Maybe<T> => arr.find(f);
 export const findIndex = <T>(f:Func<T, boolean>):Func<T[], number> => (arr:T[]):number => arr.findIndex(f);
-export const first = at(0);
+export const first = <T>(arr:T[]) => at(0)(arr);
 export const flatten = <T>(arr:T[][]):T[] => reduce((acc:T[], cur:T[]):T[] => ([] as T[]).concat(acc).concat(cur), [])(arr);
 export const from = concat([]);
 export const includes = <T>(item:T):Func<T[], boolean> => (arr:T[]):boolean => arr.includes(item);
