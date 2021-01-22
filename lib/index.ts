@@ -42,6 +42,7 @@ export const createIndex = <T, U>(getId:Func<T, string>, transform:Func<T, U>):F
     }),
     {}
 );
+export const diff = <T>(arr1:T[], arr2:T[]):T[] => arr1.filter((obj:T) => !arr2.includes(obj));
 export const entries = <T>(arr:T[]):IterableIterator<[number, T]> => arr.entries();
 export const every = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boolean => arr.every(f);
 export const filter = <T>(f:Func<T, boolean>):Func<T[], T[]> => (arr:T[]):T[] => arr.filter(f);
