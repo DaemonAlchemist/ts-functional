@@ -181,7 +181,7 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
 );
 
 // Other helpers
-export const memoize = <A extends any[], B, C>(f:Variadic<A, B>, options: IMemoizeOptions<A, B, C>):Variadic<A, B> => {
+export const memoize = <A extends any[], B, C = any>(f:Variadic<A, B>, options: IMemoizeOptions<A, B, C>):Variadic<A, B> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
@@ -195,7 +195,7 @@ export const memoize = <A extends any[], B, C>(f:Variadic<A, B>, options: IMemoi
     }
 }
 
-export const memoizePromise = <A extends any[], B, C>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B, C>):Variadic<A, Promise<B>> => {
+export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B, C>):Variadic<A, Promise<B>> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
