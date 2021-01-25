@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -45,6 +45,11 @@ describe("ts-functional", () => {
             const arr2:number[] = [1, 3, 5, 7, 9];
             expect(diff(arr1, arr2)).toEqual([2, 4, 6, 8, 0]);
         });
+        it("should return only unique values", () => {
+            const arr1:number[] = [1, 1, 2, 3];
+            const arr2:number[] = [2];
+            expect(diff(arr1, arr2)).toEqual([1, 3]);
+        });
         it("should remove all occurences of a removed value", () => {
             const arr1:number[] = [1, 2, 3, 4, 5, 1, 6, 7, 3, 8, 5, 9, 7, 0, 9];
             const arr2:number[] = [1, 3, 5, 7, 9];
@@ -69,6 +74,49 @@ describe("ts-functional", () => {
             const arr1:number[] = [];
             const arr2:number[] = [];
             expect(diff(arr1, arr2)).toEqual([]);
+        });
+    });
+    describe("intersection", () => {
+        it("should return only elements in both arrays", () => {
+            const arr1 = [1, 2, 3, 4, 5];
+            const arr2 = [1, 3, 5, 7, 9];
+            expect(intersection(arr1, arr2)).toEqual([1, 3, 5]);
+        });
+        it("should return only unique elements", () => {
+            const arr1 = [1, 1, 2, 3, 4, 5];
+            const arr2 = [1, 3, 5, 7, 9];
+            expect(intersection(arr1, arr2)).toEqual([1, 3, 5]);
+        });
+        it("should return an empty array if either array is empty", () => {
+            const arr1 = [1, 2, 3, 4, 5];
+            const arr2:number[] = [];
+            expect(intersection(arr1, arr2)).toEqual([]);
+            expect(intersection(arr2, arr1)).toEqual([]);
+        });
+        it("should return an empty array if both arrays are empty", () => {
+            expect(intersection([], [])).toEqual([]);
+        });
+        it("should return an empty array if the arrays have no elements in common", () => {
+            const arr1 = [2, 4, 6, 8, 0];
+            const arr2 = [1, 3, 5, 7, 9];
+            expect(intersection(arr1, arr2)).toEqual([]);
+        });
+        it("should return the full array if both arrays are identical", () => {
+            const arr1 = [1, 2, 3, 4, 5];
+            const arr2 = [1, 2, 3, 4, 5];
+            expect(intersection(arr1, arr2)).toEqual([1, 2, 3, 4, 5]);
+        });
+    });
+    describe("union", () => {
+        it("should return all unique elements in both arrays", () => {
+            const arr1 = [1, 2, 3, 4, 5];
+            const arr2 = [6, 7, 8, 9, 0];
+            expect(union(arr1, arr2)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+        });
+        it("should remove duplicate values", () => {
+            const arr1 = [1, 2, 3, 3, 4, 5];
+            const arr2 = [6, 7, 8, 9, 4, 0];
+            expect(union(arr1, arr2)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
         });
     });
     describe("juxt", () => {

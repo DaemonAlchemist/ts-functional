@@ -42,7 +42,7 @@ export const createIndex = <T, U>(getId:Func<T, string>, transform:Func<T, U>):F
     }),
     {}
 );
-export const diff = <T>(arr1:T[], arr2:T[]):T[] => arr1.filter((obj:T) => !arr2.includes(obj));
+export const diff = <T>(arr1:T[], arr2:T[]):T[] => unique(arr1).filter((obj:T) => !arr2.includes(obj));
 export const entries = <T>(arr:T[]):IterableIterator<[number, T]> => arr.entries();
 export const every = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boolean => arr.every(f);
 export const filter = <T>(f:Func<T, boolean>):Func<T[], T[]> => (arr:T[]):T[] => arr.filter(f);
@@ -53,6 +53,7 @@ export const flatten = <T>(arr:T[][]):T[] => reduce((acc:T[], cur:T[]):T[] => ([
 export const from = concat([]);
 export const includes = <T>(item:T):Func<T[], boolean> => (arr:T[]):boolean => arr.includes(item);
 export const indexOf = <T>(item:T, start?:number):Func<T[], number> => (arr:T[]):number => arr.indexOf(item, start);
+export const intersection = <T>(arr1:T[], arr2:T[]):T[] => unique(arr1).filter((obj:T) => arr2.includes(obj));
 export const joinWith = <T>(sep:string):Func<T[], string> => (arr:T[]):string => arr.join(sep);
 export const juxt:IJuxt = (...funcs:any) => (obj:any) => funcs.map((f:any) => f(obj));
 export const keys = <T>(arr:T[]):IterableIterator<number> => arr.keys();
@@ -100,6 +101,7 @@ export const splice = <T>(start:number, length?:number) => (arr:T[]):T[] => {
 };
 export const some = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boolean => arr.some(f);
 export const sort = <T>(f:(a:T, b:T) => number):Func<T[], T[]> => (arr:T[]):T[] => concat([] as T[])(arr).sort(f);
+export const union = <T>(arr1:T[], arr2:T[]):T[] => unique(arr1.concat(arr2));
 export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 
 // Object methods
