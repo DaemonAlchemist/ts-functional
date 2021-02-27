@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -262,6 +262,14 @@ describe("ts-functional", () => {
             expect((picked as any).a).toBeUndefined();
             expect(picked.b).toEqual(2);
             expect((picked as any).c).toBeUndefined()
+        })
+    });
+    describe("objMap", () => {
+        it("should map objects", () => {
+            const orig = {a: 1, b: 2, c: 3};
+            const final = {a: "a:1", b: "b:2", c: "c:3"};
+            const f = (value: number, id: string) => `${id}:${value}`;
+            expect(JSON.stringify(objMap(f)(orig))).toEqual(JSON.stringify(final));
         })
     });
     describe("or", () =>{

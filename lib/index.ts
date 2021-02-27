@@ -124,6 +124,16 @@ export const omit = <T, K extends keyof T>(...fields:K[]) => (obj:T):Omit<T, K> 
     return ret;
 }
 
+export const objMap = <A, B>(f:(obj:A, id: string) => B) =>
+    (container:Index<A>):Index<B> =>
+    Object.keys(container).reduce(
+        (obj:Index<B>, id: string):Index<B> => ({
+            ...obj,
+            [id]: f(container[id], id)
+        }),
+        {}
+    );
+
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);
