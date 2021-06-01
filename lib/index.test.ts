@@ -298,11 +298,61 @@ describe("ts-functional", () => {
         })
     });
     describe("sort", () => {
-        it("should work", () => {
-            const orig = ["c", "d", "b", "a"];
-            const final = ["a", "b", "c", "d"];
-            const sorter = sort((a:string, b:string) => a.localeCompare(b));
-            expect(sorter(orig)).toEqual(final);
+        describe("wrapper", () => {
+            it("should work", () => {
+                const orig = ["c", "d", "b", "a"];
+                const final = ["a", "b", "c", "d"];
+                const sorter = sort((a:string, b:string) => a.localeCompare(b));
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.asText.asc", () => {
+            it("should work", () => {
+                const orig = ["c", "d", "b", "a"];
+                const final = ["a", "b", "c", "d"];
+                const sorter = sort(sort.asText.asc);
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.asText.desc", () => {
+            it("should work", () => {
+                const orig = ["c", "d", "b", "a"];
+                const final = ["d", "c", "b", "a"];
+                const sorter = sort(sort.asText.desc);
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.asNumber.asc", () => {
+            it("should work", () => {
+                const orig = [3, 4, 2, 1];
+                const final = [1, 2, 3, 4];
+                const sorter = sort(sort.asNumber.asc);
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.asNumber.desc", () => {
+            it("should work", () => {
+                const orig = [3, 4, 2, 1];
+                const final = [4, 3, 2, 1];
+                const sorter = sort(sort.asNumber.desc);
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.by.asc", () => {
+            it("should work", () => {
+                const orig:Array<{a: number}> = [{a: 3}, {a: 4}, {a: 2}, {a: 1}];
+                const final:Array<{a: number}> = [{a: 1}, {a: 2}, {a: 3}, {a: 4}];
+                const sorter = sort(sort.by<{a: number}, "a">("a").asc);
+                expect(sorter(orig)).toEqual(final);
+            });
+        });
+        describe("sort.by.desc", () => {
+            it("should work", () => {
+                const orig:Array<{a: number}> = [{a: 3}, {a: 4}, {a: 2}, {a: 1}];
+                const final:Array<{a: number}> = [{a: 4}, {a: 3}, {a: 2}, {a: 1}];
+                const sorter = sort(sort.by<{a: number}, "a">("a").desc);
+                expect(sorter(orig)).toEqual(final);
+            });
         });
     });
     describe("arg", () => {

@@ -100,7 +100,26 @@ export const splice = <T>(start:number, length?:number) => (arr:T[]):T[] => {
     return newArr;
 };
 export const some = <T>(f:Func<T, boolean>):Func<T[], boolean> => (arr:T[]):boolean => arr.some(f);
-export const sort = <T>(f:(a:T, b:T) => number):Func<T[], T[]> => (arr:T[]):T[] => concat([] as T[])(arr).sort(f);
+
+const sortInt = <T>(f:(a:T, b:T) => number):Func<T[], T[]> => (arr:T[]):T[] => concat([] as T[])(arr).sort(f);
+sortInt.asNumber = {
+    asc: (a:number, b:number) => a - b,
+    desc: (a:number, b:number) => b - a,
+};
+sortInt.asText = {
+    asc: (a:string, b:string) => a.localeCompare(b),
+    desc: (a:string, b:string) => b.localeCompare(a),
+};
+sortInt.by = <T, K extends keyof T>(field:K) => ({
+    asc: (a:T, b:T) => typeof a[field] === 'number'
+        ? sortInt.asNumber.asc(a[field] as unknown as number, b[field] as unknown as number)
+        : sortInt.asText.asc(a[field] as unknown as string, b[field] as unknown as string),
+    desc: (a:T, b:T) => typeof a[field] === 'number'
+        ? sortInt.asNumber.desc(a[field] as unknown as number, b[field] as unknown as number)
+        : sortInt.asText.desc(a[field] as unknown as string, b[field] as unknown as string),
+})
+
+export const sort = sortInt;
 export const union = <T>(arr1:T[], arr2:T[]):T[] => unique(arr1.concat(arr2));
 export const unique = <T>(arr:T[]):T[] => [...new Set(arr)];
 
