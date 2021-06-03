@@ -110,14 +110,23 @@ sortInt.asText = {
     asc: (a:string, b:string) => a.localeCompare(b),
     desc: (a:string, b:string) => b.localeCompare(a),
 };
-sortInt.by = <T, K extends keyof T>(field:K) => ({
-    asc: (a:T, b:T) => typeof a[field] === 'number'
-        ? sortInt.asNumber.asc(a[field] as unknown as number, b[field] as unknown as number)
-        : sortInt.asText.asc(a[field] as unknown as string, b[field] as unknown as string),
-    desc: (a:T, b:T) => typeof a[field] === 'number'
-        ? sortInt.asNumber.desc(a[field] as unknown as number, b[field] as unknown as number)
-        : sortInt.asText.desc(a[field] as unknown as string, b[field] as unknown as string),
-})
+
+sortInt.by = <T>(f:Func<T, number> | Func<T, string>) => ({
+    asc: (a:T, b:T) => {
+        const aVal = f(a);
+        const bVal = f(b);
+        return typeof aVal === 'number' && typeof bVal === 'number' ? sortInt.asNumber.asc(aVal,      bVal     ) :
+               typeof aVal === 'string' && typeof bVal === 'string' ?   sortInt.asText.asc(aVal,      bVal     ) :
+                                                                        sortInt.asText.asc(`${aVal}`, `${bVal}`);
+            },
+    desc: (a:T, b:T) => {
+        const aVal = f(a);
+        const bVal = f(b);
+        return typeof aVal === 'number' && typeof bVal === 'number' ? sortInt.asNumber.desc(aVal,      bVal     ) :
+               typeof aVal === 'string' && typeof bVal === 'string' ?   sortInt.asText.desc(aVal,      bVal     ) :
+                                                                        sortInt.asText.desc(`${aVal}`, `${bVal}`);
+    },
+});
 
 export const sort = sortInt;
 export const union = <T>(arr1:T[], arr2:T[]):T[] => unique(arr1.concat(arr2));

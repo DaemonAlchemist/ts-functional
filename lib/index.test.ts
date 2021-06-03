@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -342,7 +342,7 @@ describe("ts-functional", () => {
             it("should work", () => {
                 const orig:Array<{a: number}> = [{a: 3}, {a: 4}, {a: 2}, {a: 1}];
                 const final:Array<{a: number}> = [{a: 1}, {a: 2}, {a: 3}, {a: 4}];
-                const sorter = sort(sort.by<{a: number}, "a">("a").asc);
+                const sorter = sort(sort.by(prop<{a: number}, "a">("a")).asc);
                 expect(sorter(orig)).toEqual(final);
             });
         });
@@ -350,7 +350,7 @@ describe("ts-functional", () => {
             it("should work", () => {
                 const orig:Array<{a: number}> = [{a: 3}, {a: 4}, {a: 2}, {a: 1}];
                 const final:Array<{a: number}> = [{a: 4}, {a: 3}, {a: 2}, {a: 1}];
-                const sorter = sort(sort.by<{a: number}, "a">("a").desc);
+                const sorter = sort(sort.by(prop<{a: number}, "a">("a")).desc);
                 expect(sorter(orig)).toEqual(final);
             });
         });
