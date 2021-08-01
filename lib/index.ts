@@ -238,6 +238,7 @@ export const memoize = <A extends any[], B, C = any>(f:Variadic<A, B>, options: 
 export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B, C>):Variadic<A, Promise<B>> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
+    const getInvalidator = options && options.getInvalidator ? options.getInvalidator : (() => {});
     const results:Index<B> = {};
     const errors:Index<C> = {};
     const isSuccess:Index<boolean> = {};
@@ -265,6 +266,7 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
                     results[key] = result;
                     isSuccess[key] = true;
                     queueInvalidation(invalidate, key, result, undefined);
+                    getInvalidator(invalidate);
                     resolvers[key].forEach((r:(value:B) => void) => {r(result);});
                     resolvers[key] = [];
                     rejecters[key] = [];
@@ -273,6 +275,7 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
                     errors[key] = err;
                     isSuccess[key] = false;
                     queueInvalidation(invalidate, key, undefined, err);
+                    getInvalidator(invalidate);
                     rejecters[key].forEach((r:(value:C) => void) => {r(err);});
                     resolvers[key] = [];
                     rejecters[key] = [];

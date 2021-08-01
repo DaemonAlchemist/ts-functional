@@ -167,6 +167,31 @@ describe("ts-functional", () => {
                 expect(result).toEqual(2);
             });
         });
+        it("should allow the results to be manually invalidated", () => {
+            const check = jest.fn();
+            const p = (arg:number):Promise<number> => {
+                check();
+                return Promise.resolve(arg + 1);
+            }
+            let invalidate:() => void;
+            const getInvalidator = (i:() => void) => {
+                invalidate = i;
+            }
+            const fn = memoizePromise(p, {getInvalidator});
+            return fn(1).then((result:number) => {
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(result).toEqual(2);
+                return fn(1);
+            }).then((result:number) => {
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(result).toEqual(2);
+                invalidate();
+                return fn(1);
+            }).then((result:number) => {
+                expect(check).toHaveBeenCalledTimes(2);
+                expect(result).toEqual(2);
+            });
+        });
         it("should catch and cache rejections", () => {
             const check = jest.fn();
             const p = (arg:number):Promise<number> => {
