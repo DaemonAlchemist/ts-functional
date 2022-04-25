@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -118,6 +118,16 @@ describe("ts-functional", () => {
             const arr2 = [6, 7, 8, 9, 4, 0];
             expect(union(arr1, arr2)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
         });
+    });
+    describe("multiMap", () => {
+        it("should map multiple arrays into a single result", () => {
+            const first = [1, 2, 3];
+            const second = [4, 5, 6];
+            const third = [7, 8, 9];
+            const add = multiMap((a: number, b:number, c:number) => a + b + c);
+            const results = add(first, second, third);
+            expect(results).toEqual([12, 15, 18]);
+        })
     });
     describe("juxt", () => {
         it("should return a tuple of functions applied to an object", () => {

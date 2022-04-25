@@ -1,6 +1,6 @@
 import typeOf from 'type-of';
 import {inspect} from 'util';
-import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic, MatchFunc } from './types';
+import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic, MatchFunc, IMultiMap } from './types';
 
 // Common
 export const reduce = <A, B>(r:Reducer<A, B>, def:B):Func<A[], B> => (arr:A[]):B => arr.reduce(r, def);
@@ -60,7 +60,19 @@ export const juxt:IJuxt = (...funcs:any) => (obj:any) => funcs.map((f:any) => f(
 export const keys = <T>(arr:T[]):IterableIterator<number> => arr.keys();
 export const last = <T>(arr:T[]):Maybe<T> => at<T>(arr.length - 1)(arr);
 export const lastIndexOf = <T>(item:T):Func<T[], number> => (arr:T[]):number => arr.lastIndexOf(item);
+export const length = <T>(arr:T[]) => arr.length;
 export const map = <A, B>(m:Func<A, B>):Func<A[], B[]> => (arr:A[]):B[] => arr.map(m);
+export const multiMap:IMultiMap = <T>(f:((...args:any[]) => T)):((...args:any[][]) => T[]) => (...args:any[][]):T[] => {
+    const lengths = args.map(length);
+    const min = Math.min(...lengths);
+    const max = Math.max(...lengths);
+    if(min !== max) {
+        throw "Multimap requires all arrays to have the same length";
+    }
+
+    return range(0, min - 1).map(i => f(...args.map(at(i))));
+};
+
 export const partition = <T>(getId:Func<T, string>):Func<T[], IHash<T>> => (arr:T[]):IHash<T> => arr.reduce(
     (acc:IHash<T>, cur:T):IHash<T> => as(getId(cur), (key:string) => ({
         ...acc,

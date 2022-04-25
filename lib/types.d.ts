@@ -31,6 +31,23 @@ export declare interface IMemoizeOptions<A, B, C> {
     getInvalidator?: (invalidate:() => void) => void;
 }
 export declare type MemoizeInvalidator<A, B> = (invalidate:Func<void, void>, key:string, result?:A, err?:B) => void;
+export declare interface IMultiMap {
+    <T, A, B>(f1:(arr1:A, arr2:B) => T):(arr1:A[], arr2:B[]) => T[];
+    <T, A, B, C>(f1:(arr1:A, arr2:B, arr3:C) => T):(arr1:A[], arr2:B[], arr3:C[]) => T[];
+    <T, A, B, C, D>(f1:(arr1:A, arr2:B, arr3:C, arr4:D) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[]) => T[];
+    <T, A, B, C, D, E>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[]) => T[];
+    <T, A, B, C, D, E, F>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[]) => T[];
+    <T, A, B, C, D, E, F, G>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[]) => T[];
+    <T, A, B, C, D, E, F, G, H>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K, L>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K, arr12:L) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[], arr12:L[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K, arr12:L, arr13:M) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[], arr12:L[], arr13:M[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K, arr12:L, arr13:M, arr14:N) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[], arr12:L[], arr13:M[], arr14:N[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K, arr12:L, arr13:M, arr14:N, arr15:O) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[], arr12:L[], arr13:M[], arr14:N[], arr15:O[]) => T[];
+    <T, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P>(f1:(arr1:A, arr2:B, arr3:C, arr4:D, arr5:E, arr6:F, arr7:G, arr8:H, arr9:I, arr10:J, arr11:K, arr12:L, arr13:M, arr14:N, arr15:O, arr16:P) => T):(arr1:A[], arr2:B[], arr3:C[], arr4:D[], arr5:E[], arr6:F[], arr7:G[], arr8:H[], arr9:I[], arr10:J[], arr11:K[], arr12:L[], arr13:M[], arr14:N[], arr15:O[], arr16:P[]) => T[];
+}
 
 export declare interface IJuxt {
     <T, A, B>(f1:Func<T, A>, f2:Func<T, B>):Func<T, [A, B]>;
