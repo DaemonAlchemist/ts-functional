@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap, maybe } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -128,6 +128,14 @@ describe("ts-functional", () => {
             const results = add(first, second, third);
             expect(results).toEqual([12, 15, 18]);
         })
+    });
+    describe("maybe", () => {
+        it("should convert a function taking a value into one that can also take an undefined value", () => {
+            const getA = prop<{a: number}, "a">("a"); 
+            const getAIfExists = maybe(getA);
+            expect(getA({a: 2})).toEqual(2);
+            expect(getAIfExists(undefined)).toEqual(undefined);
+        });
     });
     describe("juxt", () => {
         it("should return a tuple of functions applied to an object", () => {

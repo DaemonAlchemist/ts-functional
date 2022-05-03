@@ -10,6 +10,9 @@ export const tuple = {
     first: <A, B>(t:Tuple<A, B>):A => t[0],
     second: <A, B>(t:Tuple<A, B>):B => t[1],
 };
+
+export const maybe = <A, B>(f:Func<A,B>):Func<Maybe<A>, Maybe<B>> => (val?:A) => !!val ? f(val) : undefined;
+
 export const makeAsync = <T, U>(f:Func<T, U>):Func<Promise<T>, Promise<U>> => (getT:Promise<T>):Promise<U> => getT.then(f);
 export const syncOrAsync = <T, U>(f:Func<T, U>) =>
     (obj:SyncOrAsync<T>):SyncOrAsync<U> => {
