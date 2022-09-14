@@ -236,6 +236,14 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
     obj
 );
 
+// Convert a function that takes arguments into an argumentless callback function
+export const callback = <T extends any[], R>(f:(...args:T) => R):((...args:T) => () => R) => (...args:T) => () => f(...args); 
+
+// "Compose" argumentless functions into one function that runs them all
+export const all = (...funcs:Array<() => void>) => () => {
+    funcs.forEach(f => {f()});
+}
+
 // Other helpers
 export const memoize = <A extends any[], B, C = any>(f:Variadic<A, B>, options: IMemoizeOptions<A, B, C>):Variadic<A, B> => {
     const keyGen = options && options.keyGen ? options.keyGen : stringify;

@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap, maybe } from './index';
+import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap, maybe, callback, all } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -10,6 +10,25 @@ console.log = jest.fn((msg:string) => {log.push(msg)});
 console.error = jest.fn((msg:string) => {error.push(msg)});
 
 describe("ts-functional", () => {
+    describe("all", () => {
+        it("should combine functions into one callback", () => {
+            const a = jest.fn();
+            const b = jest.fn();
+            const combined = all(a, b);
+            expect(a).toBeCalledTimes(0);
+            expect(b).toBeCalledTimes(0);
+            combined();
+            expect(a).toHaveBeenCalled();
+            expect(b).toHaveBeenCalled();
+        })
+    });
+    describe("callback", () => {
+        it("should create a callback from a function", () => {
+            const add = (a:number, b:number) => a + b;
+            const addCallback = callback(add);
+            expect(addCallback(1, 2)()).toEqual(3);
+        })
+    });
     describe("chunk", () => {
         it("should split an array", () => {
             const orig = [1, 2, 3, 4, 5, 6, 7, 8];

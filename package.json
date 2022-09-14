@@ -34,7 +34,6 @@
   "homepage": "https://github.com/DaemonAlchemist/ts-module-template#readme",
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/redux": "^3.6.0",
     "dependency-check": "^4.1.0",
     "jest": "^24.8.0",
     "npm-check-updates": "^3.1.20",
