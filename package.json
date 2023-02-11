@@ -36,7 +36,7 @@
     "@types/jest": "^24.0.17",
     "dependency-check": "^4.1.0",
     "jest": "^24.8.0",
-    "npm-check-updates": "^3.1.20",
+    "npm-check-updates": "^16.7.4",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.10.1",
     "typescript": "^3.5.3"
