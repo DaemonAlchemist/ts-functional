@@ -257,7 +257,7 @@ export const memoize = <A extends any[], B, C = any>(f:Variadic<A, B>, options: 
 }
 
 export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promise<B>>, options?: IMemoizeOptions<A, B, C>):Variadic<A, Promise<B>> => {
-    const keyGen = options && options.keyGen ? options.keyGen : stringify;
+    const keyGen = options && options.keyGen ? options.keyGen : JSON.stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const getInvalidator = options && options.getInvalidator ? options.getInvalidator : (() => {});
     const results:Index<B> = {};
