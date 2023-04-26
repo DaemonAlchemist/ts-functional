@@ -243,7 +243,7 @@ export const all = (...funcs:Array<() => void>) => () => {
 
 // Other helpers
 export const memoize = <A extends any[], B, C = any>(f:Variadic<A, B>, options: IMemoizeOptions<A, B, C>):Variadic<A, B> => {
-    const keyGen = options && options.keyGen ? options.keyGen : stringify;
+    const keyGen = options && options.keyGen ? options.keyGen : JSON.stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const results:Index<B> = {};
     return (...args:A):B => {
