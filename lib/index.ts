@@ -178,6 +178,16 @@ export const objMap = <A, B>(f:(obj:A, id: string) => B) =>
         {}
     );
 
+export const objFilter = <A, B>(f:(obj:A, id: string) => boolean) =>
+    (container:Index<A>):Index<A> =>
+    Object.keys(container).filter(key => f(container[key], key)).reduce(
+        (obj:Index<A>, key:string):Index<A> => ({
+            ...obj,
+            [key]: container[key],
+        }),
+        {}
+    );
+
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);

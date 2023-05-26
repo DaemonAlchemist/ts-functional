@@ -1,4 +1,4 @@
-import { arg, args, chunk, juxt, matchOn, memoizePromise, omit, or, pick, range, sort, diff, intersection, union, objMap, prop, multiMap, maybe, callback, all } from './index';
+import { all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, memoizePromise, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -333,6 +333,14 @@ describe("ts-functional", () => {
             const f = (value: number, id: string) => `${id}:${value}`;
             expect(JSON.stringify(objMap(f)(orig))).toEqual(JSON.stringify(final));
         })
+    });
+    describe("objFilter", () => {
+        it("should filter object", () => {
+            const orig = {a: 1, b: 2, c: 3};
+            const final = {a:1, c:3};
+            const f = (value:number, id:string) => value !== 2;
+            expect(JSON.stringify(objFilter(f)(orig))).toEqual(JSON.stringify(final));
+        });
     });
     describe("or", () =>{
         it("should provide defaults for non-truthy objects", () => {
