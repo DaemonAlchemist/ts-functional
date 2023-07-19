@@ -65,6 +65,7 @@ export const last = <T>(arr:T[]):Maybe<T> => at<T>(arr.length - 1)(arr);
 export const lastIndexOf = <T>(item:T):Func<T[], number> => (arr:T[]):number => arr.lastIndexOf(item);
 export const length = <T>(arr:T[]) => arr.length;
 export const map = <A, B>(m:Func<A, B>):Func<A[], B[]> => (arr:A[]):B[] => arr.map(m);
+export const forEach = <A>(f:(obj:A) => void) => (arr:A[]) => {arr.forEach(f);}
 export const multiMap:IMultiMap = <T>(f:((...args:any[]) => T)):((...args:any[][]) => T[]) => (...args:any[][]):T[] => {
     const lengths = args.map(length);
     const min = Math.min(...lengths);
