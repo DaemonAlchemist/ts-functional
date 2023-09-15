@@ -1,4 +1,4 @@
-import { all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, memoizePromise, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union } from './index';
+import { all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union } from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -340,6 +340,17 @@ describe("ts-functional", () => {
             const final = {a:1, c:3};
             const f = (value:number, id:string) => value !== 2;
             expect(JSON.stringify(objFilter(f)(orig))).toEqual(JSON.stringify(final));
+        });
+    });
+    describe("merge", () => {
+        it("should merge objects by key", () => {
+            const one = {a: 1, b: 2};
+            const two = {c: 3, d: 4};
+            const combined = merge(one, two);
+            expect(combined.a).toEqual(1);
+            expect(combined.b).toEqual(2);
+            expect(combined.c).toEqual(3);
+            expect(combined.d).toEqual(4);
         });
     });
     describe("or", () =>{

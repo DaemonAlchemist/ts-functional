@@ -189,6 +189,11 @@ export const objFilter = <A, B>(f:(obj:A, id: string) => boolean) =>
         {}
     );
 
+export const merge = <T>(...objects:Index<T>[]):Index<T> => objects.reduce(
+    (combined, cur) => ({...combined, ...cur}),
+    {}
+);
+
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);
