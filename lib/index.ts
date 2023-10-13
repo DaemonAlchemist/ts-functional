@@ -179,7 +179,7 @@ export const objMap = <A, B>(f:(obj:A, id: string) => B) =>
         {}
     );
 
-export const objFilter = <A, B>(f:(obj:A, id: string) => boolean) =>
+export const objFilter = <A>(f:(obj:A, id: string) => boolean) =>
     (container:Index<A>):Index<A> =>
     Object.keys(container).filter(key => f(container[key], key)).reduce(
         (obj:Index<A>, key:string):Index<A> => ({
