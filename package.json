@@ -42,7 +42,6 @@
     "typescript": "^3.5.3"
   },
   "dependencies": {
-    "type-of": "^2.0.1",
-    "util": "^0.12.4"
+    "type-of": "^2.0.1"
   }
 }

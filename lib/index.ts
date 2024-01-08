@@ -1,5 +1,4 @@
 import typeOf from 'type-of';
-import {inspect} from 'util';
 import { Func, ICompose, IHash, IJuxt, IMemoizeOptions, Index, IPipe, ISwitch, Maybe, MaybeNull, Reducer, SyncOrAsync, Tuple, Variadic, MatchFunc, IMultiMap } from './types';
 
 // Common
@@ -199,7 +198,20 @@ export const append = (suffix:string):Func<string, string> => (str:string):strin
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);
 export const charCodeAt = (index:number):Func<string, number> => (str:string):number => str.charCodeAt(index);
 export const endsWith = (suffix:string):Func<string, boolean> => (str:string):boolean => str.endsWith(suffix);
-export const hash = (str:string):string => inspect(str);
+export const hash = (str:string):string => {
+    let hash = 5381,
+    i    = str.length;
+
+    while(i) {
+        hash = (hash * 33) ^ str.charCodeAt(--i);
+    }
+
+    /* JavaScript does bitwise operations (like XOR, above) on 32-bit signed
+    * integers. Since we want the results to be always positive, convert the
+    * signed int to an unsigned by doing an unsigned bitshift. */
+    return `${hash >>> 0}`;
+};
+
 export const matches = (regex:RegExp):Func<string, MaybeNull<string[]>> => (str:string):MaybeNull<string[]> => str.match(regex);
 export const prepend = (prefix:string):Func<string, string> => (str:string):string => `${prefix}${str}`;
 export const repeat = (count:number):Func<string, string> => (str:string):string => str.repeat(count);
@@ -222,7 +234,23 @@ export const isNotEmpty = <T>(obj:T):boolean => obj ? true : false;
 export const debug = <T>(obj:T):T => {console.log(obj); return obj;}
 export const identity = <T>(obj:T):T => obj;
 export const get = <T>(obj:T):Func<undefined, T> => ():T => obj;
-export const stringify = <T>(obj:T):string => inspect(obj);
+
+// Custom version of stringify that properly handles circular object references
+export const stringify = <T>(obj:T):string => {
+    const seen = new WeakSet();
+
+    return JSON.stringify(obj, function(key, value) {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+                // Circular reference found, replace it with a special marker
+                return "[Circular]";
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+}
+
 export const arg = <T>(index:number):((...args:any[]) => T) => (...args:any[]) => args[index] as T;
 export const args = <T>(...indices:number[]):((...args:any[]) => T) => (...args:any[]):T => indices.map(i => args[i]) as unknown as T;
 
