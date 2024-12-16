@@ -307,7 +307,9 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
     const keyGen = options && options.keyGen ? options.keyGen : stringify;
     const queueInvalidation = options && options.queueInvalidation ? options.queueInvalidation : (() => {});
     const getInvalidator = options && options.getInvalidator ? options.getInvalidator : (() => {});
+    const ttl = options && options.ttl ? options.ttl : 1000 * 60 * 60 * 24 * 365;
     const results:Index<B> = {};
+    const expires:Index<number> = {};
     const errors:Index<C> = {};
     const isSuccess:Index<boolean> = {};
     const isRunning:Index<boolean> = {};
@@ -315,7 +317,7 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
     const rejecters:Index<((value:C) => void)[]> = {};
     return (...args:A):Promise<B> => {
         const key:string = keyGen(args);
-        if(typeof results[key] === 'undefined' && typeof errors[key] === 'undefined') {
+        if(typeof results[key] === 'undefined' && typeof errors[key] === 'undefined' || !!expires[key] && expires[key] < Date.now()) {
             const p = new Promise<B>((resolve:(result:B) => void, reject:(err:C) => void) => {
                 if(!Array.isArray(resolvers[key])) { resolvers[key] = [];}
                 if(!Array.isArray(rejecters[key])) { rejecters[key] = [];}
@@ -333,6 +335,7 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
                     isRunning[key] = false;
                     results[key] = result;
                     isSuccess[key] = true;
+                    expires[key] = Date.now() + ttl;
                     queueInvalidation(invalidate, key, result, undefined);
                     getInvalidator(invalidate);
                     resolvers[key].forEach((r:(value:B) => void) => {r(result);});
@@ -342,6 +345,7 @@ export const memoizePromise = <A extends any[], B, C = any>(f:Variadic<A, Promis
                     isRunning[key] = false;
                     errors[key] = err;
                     isSuccess[key] = false;
+                    expires[key] = Date.now() + ttl;
                     queueInvalidation(invalidate, key, undefined, err);
                     getInvalidator(invalidate);
                     rejecters[key].forEach((r:(value:C) => void) => {r(err);});

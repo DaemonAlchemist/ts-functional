@@ -204,6 +204,40 @@ describe("ts-functional", () => {
                 expect(result).toEqual(2);
             });
         });
+        it("should allow the results to be invalidated after a certain time", () => {
+            const check = jest.fn();
+            const p = (arg:number):Promise<number> => {
+                check();
+                return Promise.resolve(arg + 1);
+            }
+            const fn = memoizePromise(p, {ttl: 10});
+            return fn(1).then((result:number) => {
+                // Make sure the function is called once
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(result).toEqual(2);
+                return fn(1);
+            }).then((result:number) => {
+                // Make sure the result is cached
+                expect(check).toHaveBeenCalledTimes(1);
+                expect(result).toEqual(2);
+
+                // Wait for the cache to expire
+                return new Promise<number>((resolve:any) => {
+                    setTimeout(() => {
+                        resolve(fn(1));
+                    }, 20);
+                });
+            }).then((result:number) => {
+                // Make sure the function is called again
+                expect(check).toHaveBeenCalledTimes(2);
+                expect(result).toEqual(2);
+                return fn(1);
+            }).then((result:number) => {
+                // Make sure the result is re-cached
+                expect(check).toHaveBeenCalledTimes(2);
+                expect(result).toEqual(2);
+            });
+        });
         it("should allow the results to be manually invalidated", () => {
             const check = jest.fn();
             const p = (arg:number):Promise<number> => {
