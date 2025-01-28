@@ -12,6 +12,8 @@ export const tuple = {
 
 export const maybe = <A, B>(f:Func<A,B>):Func<Maybe<A>, Maybe<B>> => (val?:A) => !!val ? f(val) : undefined;
 
+export const defaultValue = <T>(def:T) => (obj:T | null | undefined):T => obj ? obj : def;
+
 export const makeAsync = <T, U>(f:Func<T, U>):Func<Promise<T>, Promise<U>> => (getT:Promise<T>):Promise<U> => getT.then(f);
 export const syncOrAsync = <T, U>(f:Func<T, U>) =>
     (obj:SyncOrAsync<T>):SyncOrAsync<U> => {

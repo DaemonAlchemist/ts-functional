@@ -1,4 +1,7 @@
-import { all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union } from './index';
+import {
+    all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue,
+    memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union,
+} from './index';
 
 // Override console log for testing
 let log:string[] = [];
@@ -21,6 +24,14 @@ describe("ts-functional", () => {
             expect(a).toHaveBeenCalled();
             expect(b).toHaveBeenCalled();
         })
+    });
+    describe("defaultValue", () => {
+        it("should return the default value if the input is undefined", () => {
+            expect(defaultValue("default")(undefined)).toEqual("default");
+        });
+        it("should return the input value if it is not undefined", () => {
+            expect(defaultValue("default")("input")).toEqual("input");
+        });
     });
     describe("callback", () => {
         it("should create a callback from a function", () => {
