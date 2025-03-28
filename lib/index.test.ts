@@ -1,5 +1,5 @@
 import {
-    all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue,
+    all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue, pipeTo,
     memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union,
 } from './index';
 
@@ -496,5 +496,44 @@ describe("ts-functional", () => {
             expect(args<[number, string]>(0, 1)(0, "one", "two", 3)).toEqual([0, "one"]);
             expect(args<[number, string]>(0, 2)(0, "one", "two", 3)).toEqual([0, "two"]);
         })
-    })
+    });
+    describe("pipeTo", () => {
+        it("should return a function that extracts info from its arguments and sends it to another function", () => {
+            const add = (a:number, b:number) => a + b;
+            const double = (a:number) => a * 2;
+            const triple = (a:number) => a * 3;
+            const timesFive = pipeTo(add, double, triple);
+            expect(timesFive(1)).toEqual(5);
+        });
+        it("should work with multiple arguments", () => {
+            const triple = (a:number) => a * 3;
+            const add = (a:number, b:number) => a + b;
+            const process = pipeTo(triple, add);
+            expect(process(1, 2)).toEqual(9);
+        });
+        it("should work with multiple arguments and multiple functions", () => {
+            const triple = (a:number) => a * 3;
+            const add = (a:number, b:number) => a + b;
+            const sub = (a:number, b:number) => a - b;
+            const mult = (a:number, b:number) => a * b;
+            const process = pipeTo(mult, add, sub);
+            expect(process(4, 1)).toEqual(15);
+        });
+        it("should work with arguments of multiple types", () => {
+            const concat = (a:string, b:number) => `${a}:${b}`;
+            const sign = (a:number) => a < 0 ? "negative" : "positive";
+            const double = (a:number) => a * 2;
+            const process = pipeTo(concat, sign, double);
+            expect(process(2)).toEqual("positive:4");
+            expect(process(-2)).toEqual("negative:-4");
+        });
+        it("should work with multiple arguments of multiple types", () => {
+            const concat = (a:string, b:number) => `${a}:${b}`;
+            const sign = (a:number, b:string) => a < 0 ? `negative-${b}` : `positive-${b}`;
+            const double = (a:number, b:string) => a * 2;
+            const process = pipeTo(concat, sign, double);
+            expect(process(2, "two")).toEqual("positive-two:4");
+            expect(process(-2, "two")).toEqual("negative-two:-4");
+        });
+    });
 });

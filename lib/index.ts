@@ -282,6 +282,23 @@ export const pipe:IPipe = <A, B>(...funcs:Func<any, any>[]):Func<A, B> => (obj:A
     obj
 );
 
+// Takes a function f and list of extractors, and returns a function that runs the extractors on the input and then runs the function on the extracted data
+export const pipeTo = <
+  Mappers extends readonly [(...args: any[]) => any, ...(readonly ((...args: any[]) => any)[])],
+  Args extends Parameters<Mappers[number]>,
+  ReturnValues extends { [K in keyof Mappers]: ReturnType<Mappers[K]> },
+  Result
+>(
+  f: (...args: ReturnValues) => Result,
+  ...mappers: Mappers & { [K in keyof Mappers]: (...args: Args) => ReturnType<Mappers[K]> }
+): (...args: Args) => Result => {
+  return (...args: Args): Result => {
+    const mapped = mappers.map((m) => m(...args)) as unknown as ReturnValues;
+    return f(...mapped);
+  };
+};
+
+
 // Convert a function that takes arguments into an argumentless callback function
 export const callback = <T extends any[], R>(f:(...args:T) => R):((...args:T) => () => R) => (...args:T) => () => f(...args); 
 
