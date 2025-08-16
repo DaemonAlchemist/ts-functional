@@ -195,6 +195,20 @@ export const merge = <T>(...objects:Index<T>[]):Index<T> => objects.reduce(
     {}
 );
 
+export const deepMerge = <T>(...objects:Index<any>[]):Index<T> => objects.reduce(
+    (combined, cur) => {
+        Object.keys(cur).forEach((key:string) => {
+            if(typeof combined[key] === 'object' && typeof cur[key] === 'object') {
+                combined[key] = deepMerge(combined[key], cur[key]);
+            } else {
+                combined[key] = cur[key];
+            }
+        });
+        return combined;
+    },
+    {}
+);
+
 // String functions
 export const append = (suffix:string):Func<string, string> => (str:string):string => `${str}${suffix}`;
 export const charAt = (index:number):Func<string, string> => (str:string) => str.charAt(index);

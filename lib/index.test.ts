@@ -1,6 +1,7 @@
 import {
     all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue, pipeTo,
     memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union,
+    deepMerge,
 } from './index';
 
 // Override console log for testing
@@ -394,6 +395,19 @@ describe("ts-functional", () => {
             const combined = merge(one, two);
             expect(combined.a).toEqual(1);
             expect(combined.b).toEqual(2);
+            expect(combined.c).toEqual(3);
+            expect(combined.d).toEqual(4);
+        });
+    });
+    describe("deepMerge", () => {
+        it("should deeply merge objects by key", () => {
+            const first = {a: 1, b: {b1: 21, b2: 22}, c: 3};
+            const second = {b: {b2: 32, b3: 33}, d: 4};
+            const combined = deepMerge(first, second);
+            expect(combined.a).toEqual(1);
+            expect((combined.b as any).b1).toEqual(21);
+            expect((combined.b as any).b2).toEqual(32);
+            expect((combined.b as any).b3).toEqual(33);
             expect(combined.c).toEqual(3);
             expect(combined.d).toEqual(4);
         });
