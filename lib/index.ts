@@ -78,6 +78,14 @@ export const multiMap:IMultiMap = <T>(f:((...args:any[]) => T)):((...args:any[][
     return range(0, min - 1).map(i => f(...args.map(at(i))));
 };
 
+type CrossFunc<A, B, C> = (a:A, b:B) => C;
+type ArrayCrossFunc<A, B, C> = CrossFunc<A[], B[], C[]>;
+export const cross = <A, B, C>(f:CrossFunc<A, B, C>):(ArrayCrossFunc<A, B, C>) => (arrA:A[], arrB:B[]):C[] => 
+    arrA.reduce(
+        (acc:C[], a:A):C[] => [...acc, ...arrB.map((b:B):C => f(a, b))],
+        []
+    );
+
 export const partition = <T>(getId:Func<T, string>):Func<T[], IHash<T>> => (arr:T[]):IHash<T> => arr.reduce(
     (acc:IHash<T>, cur:T):IHash<T> => as(getId(cur), (key:string) => ({
         ...acc,

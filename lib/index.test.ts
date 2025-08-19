@@ -1,5 +1,5 @@
 import {
-    all, arg, args, callback, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue, pipeTo,
+    all, arg, args, callback, cross, chunk, diff, intersection, juxt, matchOn, maybe, defaultValue, pipeTo,
     memoizePromise, merge, multiMap, objFilter, objMap, omit, or, pick, prop, range, sort, union,
     deepMerge,
 } from './index';
@@ -148,6 +148,24 @@ describe("ts-functional", () => {
             const arr1 = [1, 2, 3, 3, 4, 5];
             const arr2 = [6, 7, 8, 9, 4, 0];
             expect(union(arr1, arr2)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+        });
+    });
+    describe("cross", () => {
+        it("should return the cross product of two arrays", () => {
+            const arr1 = [1, 2];
+            const arr2 = [3, 4];
+            const f = (a:number, b:number):string => `${a}:${b}`;
+            const crossProduct = cross(f);
+            const results = crossProduct(arr1, arr2);
+            expect(results).toEqual(["1:3", "1:4", "2:3", "2:4"]);
+        });
+        it("should return an empty array if either input is empty", () => {
+            const arr1:number[] = [];
+            const arr2 = [3, 4];
+            const f = (a:number, b:number):string => `${a}:${b}`;
+            const crossProduct = cross(f);
+            expect(crossProduct(arr1, arr2)).toEqual([]);
+            expect(crossProduct(arr2, arr1)).toEqual([]);
         });
     });
     describe("multiMap", () => {
